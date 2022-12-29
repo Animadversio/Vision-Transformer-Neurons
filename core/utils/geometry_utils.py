@@ -79,7 +79,7 @@ def ExpMap(x, tang_vec, EPS = 1E-4):
     uni_tang_vec = tang_vec / angle_dist
     # x = repmat(x, size(tang_vec, 1), 1); # vectorized
     xnorm = np.linalg.norm(x)
-    assert(xnorm > EPS, "Exponential Map from a basis point at origin is degenerate, examine the code. (May caused by 0 initialization)")
+    assert xnorm > EPS  # "Exponential Map from a basis point at origin is degenerate, examine the code. (May caused by 0 initialization)")
     y = (np.cos(angle_dist) @ (x[:] / xnorm) + np.sin(angle_dist) * uni_tang_vec) * xnorm
     return y
 
@@ -106,7 +106,7 @@ def radial_proj(codes, max_norm):
 
 
 def orthogonalize(basis, codes):
-    if len(basis.shape) is 1:
+    if len(basis.shape) == 1:
         basis = basis[np.newaxis, :]
     assert basis.shape[1] == codes.shape[1]
     unit_basis = basis / norm(basis)
