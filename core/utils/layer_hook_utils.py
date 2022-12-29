@@ -402,13 +402,14 @@ class featureFetcher_module:
                     if ingraph else [inp.detach().to(store_device) for inp in input]
         else:
             def hook(model, input, output):
-                self.activations[name] = output.to(store_device) if ingraph else output.detach().to(store_device)
-        # else:
-        #     def hook(model, input, output):
-        #         if len(output.shape) == 4:
-        #             self.activations[name] = output.detach()[:, unit[0], unit[1], unit[2]]
-        #         elif len(output.shape) == 2:
-        #             self.activations[name] = output.detach()[:, unit[0]]
+                if type(output) is tuple:
+                    # if type output is not a tensor but a tuple of tensors
+                    # return the first tensor in the tuple
+                    self.activations[name] = output[0].to(store_device) if ingraph else output[0].detach().to(
+                        store_device)
+                else:
+                    self.activations[name] = output.to(store_device) if ingraph else output.detach().to(store_device)
+
         return hook
 
 # def get_activation(name, unit=None):
